@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Watermark Generator</string>
+    <string name="pilih_gambar">Pilih Gambar</string>
+    <string name="pasang_watermark">Pasang Watermark</string>
+    <string name="gagal_untuk_membuat_gambar">Gagal untuk membuat gambar: %1$s</string>
+    <string name="semua_gambar_sudah_diberikan_watermark">Semua gambar sudah diberikan watermark.</string>
+    <string name="beberapa_gambar_gagal_di_proses">Beberapa gambar gagal di proses.</string>
+    <string name="sedang_menempelkan_watermark">Sedang menempelkan watermark...</string>
 </resources>
