@@ -12,12 +12,10 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -58,6 +56,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displaySelectedImages() {
+        binding.imagesContainer.removeAllViews()
+
         val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "coedotzmagic watermark")
         if (!directory.exists() || directory.listFiles()!!.isEmpty()) {
             binding.welcome.visibility = View.VISIBLE
