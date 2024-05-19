@@ -50,6 +50,7 @@ dependencies {
 
     implementation ("io.github.ParkSangGwon:tedimagepicker:1.4.2")
     implementation ("com.github.chrisbanes:PhotoView:2.0.0")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")

@@ -17,6 +17,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -58,7 +60,10 @@ class MainActivity : AppCompatActivity() {
     private fun displaySelectedImages() {
         binding.imagesContainer.removeAllViews()
 
-        val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "coedotzmagic watermark")
+        val directory = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            "coedotzmagic watermark"
+        )
         if (!directory.exists() || directory.listFiles()!!.isEmpty()) {
             binding.welcome.visibility = View.VISIBLE
             binding.welcome.text = getString(R.string.welcome)
@@ -66,19 +71,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         directory.listFiles()?.forEach { file ->
-            binding.welcome.visibility = View.GONE
-            val imageView = ImageView(this)
-            imageView.setImageURI(Uri.fromFile(file))
+            val imageView = ImageView(this@MainActivity)
             imageView.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
+            binding.imagesContainer.addView(imageView)
+
+            Glide.with(this@MainActivity)
+                .load(Uri.fromFile(file))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(imageView)
 
             imageView.setOnClickListener {
                 showImagePreview(Uri.fromFile(file))
             }
-
-            binding.imagesContainer.addView(imageView)
         }
     }
 
