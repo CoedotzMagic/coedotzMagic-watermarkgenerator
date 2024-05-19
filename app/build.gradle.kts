@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     implementation ("io.github.ParkSangGwon:tedimagepicker:1.4.2")
+    implementation ("com.github.chrisbanes:PhotoView:2.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.21")

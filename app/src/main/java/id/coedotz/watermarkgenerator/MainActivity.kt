@@ -1,5 +1,6 @@
 package id.coedotz.watermarkgenerator
 
+import android.app.Dialog
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,9 +13,14 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.github.chrisbanes.photoview.PhotoView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import gun0912.tedimagepicker.builder.TedImagePicker
 import id.coedotz.watermarkgenerator.databinding.ActivityMainBinding
@@ -57,8 +63,28 @@ class MainActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
+
+            imageView.setOnClickListener {
+                showImagePreview(uri)
+            }
+
             binding.imagesContainer.addView(imageView)
         }
+    }
+
+    private fun showImagePreview(uri: Uri) {
+        val inflater = LayoutInflater.from(this)
+        val dialogView = inflater.inflate(R.layout.dialog_image_preview, null)
+        val photoView: PhotoView = dialogView.findViewById(R.id.photo_view)
+        photoView.setImageURI(uri)
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.tinjau_gambar))
+            .setView(dialogView)
+            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun applyWatermarkToImages() {
