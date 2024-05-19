@@ -9,4 +9,5 @@
     <string name="silahkan_pilih_gambar">Silahkan pilih gambar</string>
     <string name="batal_memilih_gambar">Batal memilih gambar</string>
     <string name="tinjau_gambar">Tinjau Gambar</string>
+    <string name="welcome">Klik Tombol (+ Pilih Gambar) untuk memilih gambar yang ingin diberikan watermark.</string>
 </resources>

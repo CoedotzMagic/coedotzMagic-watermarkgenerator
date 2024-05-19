@@ -1,6 +1,5 @@
 package id.coedotz.watermarkgenerator
 
-import android.app.Dialog
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,8 +12,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.GridLayout
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -24,6 +24,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import gun0912.tedimagepicker.builder.TedImagePicker
 import id.coedotz.watermarkgenerator.databinding.ActivityMainBinding
+import java.io.File
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
         }
+
+        displaySelectedImages()
     }
 
     private fun setSnackbar(msg: String) {
@@ -55,22 +58,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displaySelectedImages() {
-        binding.imagesContainer.removeAllViews()
-        selectedImages.forEach { uri ->
+        val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "coedotzmagic watermark")
+        if (!directory.exists() || directory.listFiles()!!.isEmpty()) {
+            binding.welcome.visibility = View.VISIBLE
+            binding.welcome.text = getString(R.string.welcome)
+            return
+        }
+
+        directory.listFiles()?.forEach { file ->
+            binding.welcome.visibility = View.GONE
             val imageView = ImageView(this)
-            imageView.setImageURI(uri)
+            imageView.setImageURI(Uri.fromFile(file))
             imageView.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
 
             imageView.setOnClickListener {
-                showImagePreview(uri)
+                showImagePreview(Uri.fromFile(file))
             }
 
             binding.imagesContainer.addView(imageView)
         }
     }
+
 
     private fun showImagePreview(uri: Uri) {
         val inflater = LayoutInflater.from(this)
