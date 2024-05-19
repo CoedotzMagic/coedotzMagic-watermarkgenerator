@@ -32,14 +32,15 @@ class MainActivity : AppCompatActivity() {
         binding.selectImagesButton.setOnClickListener {
             TedImagePicker.with(this)
                 .startMultiImage { uriList ->
-                    selectedImages.clear()
-                    selectedImages.addAll(uriList)
-                    displaySelectedImages()
+                    if (uriList.isEmpty()) {
+                        setSnackbar(getString(R.string.batal_memilih_gambar))
+                    } else {
+                        selectedImages.clear()
+                        selectedImages.addAll(uriList)
+                        applyWatermarkToImages()
+                        displaySelectedImages()
+                    }
                 }
-        }
-
-        binding.applyWatermarkButton.setOnClickListener {
-            applyWatermarkToImages()
         }
     }
 
