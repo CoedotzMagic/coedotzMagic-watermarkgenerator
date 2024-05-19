@@ -61,25 +61,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyWatermarkToImages() {
-        val currentYearUsingCalendar = Calendar.getInstance().get(Calendar.YEAR)
-        setSnackbar(getString(R.string.sedang_menempelkan_watermark))
-        var success = true
-        selectedImages.forEach { uri ->
-            val bitmap = getBitmapFromUri(uri)
-            if (bitmap != null) {
-                val watermarkedBitmap =
-                    addWatermark(bitmap, "@meonkbycoedotz - $currentYearUsingCalendar")
-                success = success && saveBitmapToFile(watermarkedBitmap)
-            } else {
-                Log.e("Watermark", "Failed to decode file: $uri")
-                setSnackbar(getString(R.string.gagal_untuk_membuat_gambar, uri))
-                success = false
-            }
-        }
-        if (success) {
-            setSnackbar(getString(R.string.semua_gambar_sudah_diberikan_watermark))
+        if (selectedImages.isEmpty()) {
+            setSnackbar(getString(R.string.silahkan_pilih_gambar))
+            return
         } else {
-            setSnackbar(getString(R.string.beberapa_gambar_gagal_di_proses))
+            val currentYearUsingCalendar = Calendar.getInstance().get(Calendar.YEAR)
+            setSnackbar(getString(R.string.sedang_menempelkan_watermark))
+            var success = true
+            selectedImages.forEach { uri ->
+                val bitmap = getBitmapFromUri(uri)
+                success = if (bitmap != null) {
+                    val watermarkedBitmap =
+                        addWatermark(bitmap, "@meonkbycoedotz - $currentYearUsingCalendar")
+                    success && saveBitmapToFile(watermarkedBitmap)
+                } else {
+                    Log.e("Watermark", "Failed to decode file: $uri")
+                    setSnackbar(getString(R.string.gagal_untuk_membuat_gambar, uri))
+                    false
+                }
+            }
+            if (success) {
+                setSnackbar(getString(R.string.semua_gambar_sudah_diberikan_watermark))
+            } else {
+                setSnackbar(getString(R.string.beberapa_gambar_gagal_di_proses))
+            }
         }
     }
 
@@ -89,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                 BitmapFactory.decodeStream(it)
             }
         } catch (e: Exception) {
+            setSnackbar("Gambar tidak ada")
             e.printStackTrace()
             null
         }
