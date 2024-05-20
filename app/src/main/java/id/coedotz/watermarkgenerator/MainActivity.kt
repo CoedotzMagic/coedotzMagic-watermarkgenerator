@@ -73,11 +73,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         directory.listFiles()?.forEach { file ->
-            val imageView = ImageView(this@MainActivity)
-            imageView.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            val imageView = ImageView(this@MainActivity).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 6.dpToPx(), 0, 6.dpToPx())
+                }
+                setPadding(0, 6.dpToPx(), 0, 6.dpToPx())
+            }
             binding.imagesContainer.addView(imageView)
 
             Glide.with(this@MainActivity)
@@ -254,5 +258,9 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
             setSnackbar(getString(R.string.gambar_gagal_dihapus))
         }
+    }
+
+    fun Int.dpToPx(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
 }
