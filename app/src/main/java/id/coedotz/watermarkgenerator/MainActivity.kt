@@ -68,6 +68,8 @@ class MainActivity : AppCompatActivity() {
             binding.welcome.visibility = View.VISIBLE
             binding.welcome.text = getString(R.string.welcome)
             return
+        } else {
+            binding.welcome.visibility = View.GONE
         }
 
         directory.listFiles()?.forEach { file ->
@@ -151,7 +153,7 @@ class MainActivity : AppCompatActivity() {
         val canvas = Canvas(result)
         val paint = Paint().apply {
             color = Color.WHITE
-            alpha = 60
+            alpha = 150
             textSize = 128f
             isAntiAlias = true
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
