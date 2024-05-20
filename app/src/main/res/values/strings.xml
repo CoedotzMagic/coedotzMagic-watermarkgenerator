@@ -11,4 +11,10 @@
     <string name="tinjau_gambar">Tinjau Gambar</string>
     <string name="welcome">Klik Tombol (+ Pilih Gambar) untuk memilih gambar yang ingin diberikan watermark.</string>
     <string name="sedang_diproses">Sedang Diproses</string>
+    <string name="hapus_gambar">Hapus Gambar</string>
+    <string name="gambar_berhasil_dihapus">Gambar berhasil dihapus</string>
+    <string name="gambar_gagal_dihapus">Gambar Gagal Dihapus!</string>
+    <string name="batal">Batal</string>
+    <string name="konfirmasi_hapus">Konfirmasi Hapus?</string>
+    <string name="anda_yakin_ingin_menghapus_file">Jika anda pilih OKE, Tindakan ini tidak dapat diurungkan. Apakah anda yakin ingin menghapus file?</string>
 </resources>

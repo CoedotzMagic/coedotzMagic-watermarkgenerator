@@ -105,6 +105,9 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
                 dialog.dismiss()
             }
+            .setNegativeButton(getString(R.string.hapus_gambar)) { dialog, _ ->
+                confirmationDelete(uri)
+            }
             .show()
     }
 
@@ -216,6 +219,40 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
             Log.e("Watermark", "Failed to save file", e)
             false
+        }
+    }
+
+    private fun confirmationDelete(uri: Uri) {
+        MaterialAlertDialogBuilder(this)
+            .setIcon(android.R.drawable.stat_sys_warning)
+            .setTitle(getString(R.string.konfirmasi_hapus))
+            .setMessage(getString(R.string.anda_yakin_ingin_menghapus_file))
+            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                deleteImage(uri)
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.batal)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun deleteImage(uri: Uri) {
+        try {
+            if (uri.scheme == "content") {
+                contentResolver.delete(uri, null, null)
+            } else if (uri.scheme == "file") {
+                val file = File(uri.path!!)
+                if (file.exists()) {
+                    file.delete()
+                }
+            }
+            selectedImages.remove(uri)
+            displaySelectedImages()
+            setSnackbar(getString(R.string.gambar_berhasil_dihapus))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            setSnackbar(getString(R.string.gambar_gagal_dihapus))
         }
     }
 }
