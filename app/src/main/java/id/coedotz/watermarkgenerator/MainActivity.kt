@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            displaySelectedImages()
+        }
+
         displaySelectedImages()
     }
 
@@ -65,10 +69,12 @@ class MainActivity : AppCompatActivity() {
             "coedotzmagic watermark"
         )
         if (!directory.exists() || directory.listFiles()!!.isEmpty()) {
+            binding.swipeRefreshLayout.isRefreshing = false
             binding.welcome.visibility = View.VISIBLE
             binding.welcome.text = getString(R.string.welcome)
             return
         } else {
+            binding.swipeRefreshLayout.isRefreshing = false
             binding.welcome.visibility = View.GONE
         }
 
