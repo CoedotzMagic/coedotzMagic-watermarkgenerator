@@ -15,6 +15,6 @@
     <string name="gambar_berhasil_dihapus">Gambar berhasil dihapus</string>
     <string name="gambar_gagal_dihapus">Gambar Gagal Dihapus!</string>
     <string name="batal">Batal</string>
-    <string name="konfirmasi_hapus">Konfirmasi Hapus?</string>
-    <string name="anda_yakin_ingin_menghapus_file">Jika anda pilih OKE, tindakan ini tidak dapat diurungkan. Apakah anda yakin ingin menghapus file?</string>
+    <string name="konfirmasi_hapus">Konfirmasi Hapus</string>
+    <string name="anda_yakin_ingin_menghapus_file">Jika anda pilih OK, tindakan ini tidak dapat diurungkan. Apakah anda yakin ingin menghapus file?</string>
 </resources>
