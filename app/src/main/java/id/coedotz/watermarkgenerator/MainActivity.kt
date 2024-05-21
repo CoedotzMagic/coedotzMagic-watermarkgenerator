@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                 BitmapFactory.decodeStream(it)
             }
         } catch (e: Exception) {
-            setSnackbar("Gambar tidak ada")
+            setSnackbar(getString(R.string.gambar_tidak_ada))
             e.printStackTrace()
             null
         }

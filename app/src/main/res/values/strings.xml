@@ -3,9 +3,9 @@
     <string name="pilih_gambar">Pilih Gambar</string>
     <string name="pasang_watermark">Pasang Watermark</string>
     <string name="gagal_untuk_membuat_gambar">Gagal untuk membuat gambar: %1$s</string>
-    <string name="semua_gambar_sudah_diberikan_watermark">Semua gambar sudah diberikan watermark.</string>
+    <string name="semua_gambar_sudah_diberikan_watermark">Berhasil memberikan watermark pada Gambar.</string>
     <string name="beberapa_gambar_gagal_di_proses">Beberapa gambar gagal di proses.</string>
-    <string name="sedang_menempelkan_watermark">Sedang menempelkan watermark...</string>
+    <string name="sedang_menempelkan_watermark">Sedang menempelkan watermark…</string>
     <string name="silahkan_pilih_gambar">Silahkan pilih gambar</string>
     <string name="batal_memilih_gambar">Batal memilih gambar</string>
     <string name="tinjau_gambar">Tinjau Gambar</string>
@@ -17,4 +17,5 @@
     <string name="batal">Batal</string>
     <string name="konfirmasi_hapus">Konfirmasi Hapus</string>
     <string name="anda_yakin_ingin_menghapus_file">Jika anda pilih OK, tindakan ini tidak dapat diurungkan. Apakah anda yakin ingin menghapus file?</string>
+    <string name="gambar_tidak_ada">Gambar tidak ada</string>
 </resources>
