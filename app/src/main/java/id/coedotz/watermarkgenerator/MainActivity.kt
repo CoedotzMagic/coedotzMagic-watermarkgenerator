@@ -100,8 +100,8 @@ class MainActivity : AppCompatActivity() {
             binding.welcome.visibility = View.GONE
         }
 
-        directory.listFiles()?.forEach { file ->
-            if (file.name.contains("coedotzmagic-watermarked")) {
+        directory.listFiles()?.filter { file -> file.name.contains("coedotzmagic-watermarked") }
+            ?.sortedByDescending { file -> file.lastModified() }?.forEach { file ->
                 val imageView = ImageView(this@MainActivity).apply {
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -123,7 +123,6 @@ class MainActivity : AppCompatActivity() {
                     showImagePreview(Uri.fromFile(file))
                 }
             }
-        }
     }
 
     private fun showImagePreview(uri: Uri) {
