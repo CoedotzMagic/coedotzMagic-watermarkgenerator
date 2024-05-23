@@ -1,6 +1,9 @@
 package id.coedotz.watermarkgenerator
 
 import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -11,12 +14,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.chrisbanes.photoview.PhotoView
@@ -24,12 +34,20 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import gun0912.tedimagepicker.builder.TedImagePicker
 import id.coedotz.watermarkgenerator.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val selectedImages = mutableListOf<Uri>()
+    private val dataStore by lazy { applicationContext.appDataStore }
+
+    companion object {
+        const val REQUEST_APP_SETTINGS = 321
+        private val Context.appDataStore by preferencesDataStore(name = "permissions")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,17 +55,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.selectImagesButton.setOnClickListener {
-            TedImagePicker.with(this)
-                .startMultiImage { uriList ->
-                    if (uriList.isEmpty()) {
-                        setSnackbar(getString(R.string.batal_memilih_gambar))
-                    } else {
-                        selectedImages.clear()
-                        selectedImages.addAll(uriList)
-                        applyWatermarkToImages()
-                        displaySelectedImages()
+            if (hasGalleryPermission()) {
+                TedImagePicker.with(this)
+                    .startMultiImage { uriList ->
+                        if (uriList.isEmpty()) {
+                            setSnackbar(getString(R.string.batal_memilih_gambar))
+                        } else {
+                            selectedImages.clear()
+                            selectedImages.addAll(uriList)
+                            applyWatermarkToImages()
+                            displaySelectedImages()
+                        }
                     }
-                }
+            } else {
+                requestGalleryPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -268,5 +290,57 @@ class MainActivity : AppCompatActivity() {
 
     fun Int.dpToPx(): Int {
         return (this * resources.displayMetrics.density).toInt()
+    }
+
+    private val requestGalleryPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (!isGranted) {
+                lifecycleScope.launch {
+                    val denialCount = getDenialCountFromDataStore() + 1
+                    saveDenialCountToDataStore(denialCount)
+                    if (denialCount >= 3) {
+                        val snackbar =
+                            Snackbar.make(
+                                this@MainActivity.findViewById(android.R.id.content),
+                                "Izinkan Akses Galeri agar bisa melakukan Watermark.",
+                                Snackbar.LENGTH_LONG
+                            )
+                        snackbar.setAction("IZINKAN AKSES") {
+                            goToSettings()
+                        }
+                        snackbar.show()
+                    }
+                }
+            }
+        }
+
+    private fun hasGalleryPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private suspend fun getDenialCountFromDataStore(): Int {
+        val preferencesKey = intPreferencesKey("denial_count")
+        val dataStoreValue = dataStore.data.first()
+        return dataStoreValue[preferencesKey] ?: 0
+    }
+
+    private suspend fun saveDenialCountToDataStore(count: Int) {
+        val preferencesKey = intPreferencesKey("denial_count")
+        dataStore.edit { preferences ->
+            preferences[preferencesKey] = count
+        }
+    }
+
+    fun goToSettings() {
+        val myAppSettings = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.parse("package:${this.packageName}")
+        )
+        myAppSettings.addCategory(Intent.CATEGORY_DEFAULT)
+        myAppSettings.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        this.startActivityForResult(myAppSettings, REQUEST_APP_SETTINGS)
     }
 }
