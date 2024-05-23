@@ -18,6 +18,7 @@
             android:layout_height="match_parent">
 
             <ScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="16dp">
@@ -40,6 +41,16 @@
         android:paddingRight="20dp"
         android:text="@string/welcome"
         android:visibility="gone"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/select_images_button_nonextended"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/pilih_gambar"
+        android:text="@string/pilih_gambar"
+        app:srcCompat="@android:drawable/ic_input_add"/>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/select_images_button"

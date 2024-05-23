@@ -18,6 +18,8 @@ import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,22 +56,59 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.selectImagesButton.setOnClickListener {
-            if (hasGalleryPermission()) {
-                TedImagePicker.with(this)
-                    .startMultiImage { uriList ->
-                        if (uriList.isEmpty()) {
-                            setSnackbar(getString(R.string.batal_memilih_gambar))
-                        } else {
-                            selectedImages.clear()
-                            selectedImages.addAll(uriList)
-                            applyWatermarkToImages()
-                            displaySelectedImages()
-                        }
+        val animationDuration = 200L
+        binding.scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            if (scrollY > 0 && binding.selectImagesButton.visibility == View.VISIBLE) {
+                // Scroll kebawah
+                val fadeOut = AlphaAnimation(1f, 0f).apply {
+                    duration = animationDuration
+                    fillAfter = true
+                }
+                binding.selectImagesButton.startAnimation(fadeOut)
+                fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        binding.selectImagesButton.visibility = View.GONE
                     }
-            } else {
-                requestGalleryPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                })
+
+                val fadeIn = AlphaAnimation(0f, 1f).apply {
+                    duration = animationDuration
+                    fillAfter = true
+                }
+                binding.selectImagesButtonNonextended.startAnimation(fadeIn)
+                binding.selectImagesButtonNonextended.visibility = View.VISIBLE
+            } else if (scrollY == 0 && binding.selectImagesButtonNonextended.visibility == View.VISIBLE) {
+                // Scroll keatas
+                val fadeOut = AlphaAnimation(1f, 0f).apply {
+                    duration = animationDuration
+                    fillAfter = true
+                }
+                binding.selectImagesButtonNonextended.startAnimation(fadeOut)
+                fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        binding.selectImagesButtonNonextended.visibility = View.GONE
+                    }
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                })
+
+                val fadeIn = AlphaAnimation(0f, 1f).apply {
+                    duration = animationDuration
+                    fillAfter = true
+                }
+                binding.selectImagesButton.startAnimation(fadeIn)
+                binding.selectImagesButton.visibility = View.VISIBLE
             }
+        }
+
+        binding.selectImagesButton.setOnClickListener {
+            startImagePicker()
+        }
+
+        binding.selectImagesButtonNonextended.setOnClickListener {
+            startImagePicker()
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -77,6 +116,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         displaySelectedImages()
+    }
+
+    private fun startImagePicker() {
+        if (hasGalleryPermission()) {
+            TedImagePicker.with(this)
+                .startMultiImage { uriList ->
+                    if (uriList.isEmpty()) {
+                        setSnackbar(getString(R.string.batal_memilih_gambar))
+                    } else {
+                        selectedImages.clear()
+                        selectedImages.addAll(uriList)
+                        applyWatermarkToImages()
+                        displaySelectedImages()
+                    }
+                }
+        } else {
+            requestGalleryPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
     }
 
     private fun setSnackbar(msg: String) {
