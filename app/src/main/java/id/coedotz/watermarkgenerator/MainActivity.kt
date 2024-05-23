@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
             "coedotzmagic watermark"
         )
-        if (!directory.exists() || directory.listFiles()!!.isEmpty()) {
+        if (!directory.exists() || directory.listFiles()?.none { file -> file.name.contains("coedotzmagic-watermarked") } == true) {
             binding.swipeRefreshLayout.isRefreshing = false
             binding.welcome.visibility = View.VISIBLE
             binding.welcome.text = getString(R.string.welcome)
@@ -101,29 +101,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         directory.listFiles()?.forEach { file ->
-            val imageView = ImageView(this@MainActivity).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(0, 6.dpToPx(), 0, 6.dpToPx())
+            if (file.name.contains("coedotzmagic-watermarked")) {
+                val imageView = ImageView(this@MainActivity).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        setMargins(0, 6.dpToPx(), 0, 6.dpToPx())
+                    }
+                    setPadding(0, 6.dpToPx(), 0, 6.dpToPx())
                 }
-                setPadding(0, 6.dpToPx(), 0, 6.dpToPx())
-            }
-            binding.imagesContainer.addView(imageView)
+                binding.imagesContainer.addView(imageView)
 
-            Glide.with(this@MainActivity)
-                .load(Uri.fromFile(file))
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .into(imageView)
+                Glide.with(this@MainActivity)
+                    .load(Uri.fromFile(file))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(imageView)
 
-            imageView.setOnClickListener {
-                showImagePreview(Uri.fromFile(file))
+                imageView.setOnClickListener {
+                    showImagePreview(Uri.fromFile(file))
+                }
             }
         }
     }
-
 
     private fun showImagePreview(uri: Uri) {
         val inflater = LayoutInflater.from(this)
