@@ -18,4 +18,6 @@
     <string name="konfirmasi_hapus">Konfirmasi Hapus</string>
     <string name="anda_yakin_ingin_menghapus_file">Jika anda pilih OK, tindakan ini tidak dapat diurungkan. Apakah anda yakin ingin menghapus file?</string>
     <string name="gambar_tidak_ada">Gambar tidak ada</string>
+    <string name="premissions_title">IZINKAN AKSES</string>
+    <string name="premissions_isi">Izinkan Akses Galeri agar bisa melakukan Watermark.</string>
 </resources>
