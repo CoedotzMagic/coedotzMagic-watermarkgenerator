@@ -23,6 +23,7 @@ import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.datastore.preferences.core.edit
@@ -188,16 +189,17 @@ class MainActivity : AppCompatActivity() {
         val photoView: PhotoView = dialogView.findViewById(R.id.photo_view)
         photoView.setImageURI(uri)
 
-        MaterialAlertDialogBuilder(this)
+        val dialog = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.tinjau_gambar))
             .setView(dialogView)
             .setPositiveButton(android.R.string.ok) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setNegativeButton(getString(R.string.hapus_gambar)) { dialog, _ ->
+            .setNeutralButton(getString(R.string.hapus_gambar)) { dialog, _ ->
                 confirmationDelete(uri)
             }
             .show()
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_light))
     }
 
     private fun applyWatermarkToImages() {
@@ -359,10 +361,10 @@ class MainActivity : AppCompatActivity() {
                         val snackbar =
                             Snackbar.make(
                                 this@MainActivity.findViewById(android.R.id.content),
-                                "Izinkan Akses Galeri agar bisa melakukan Watermark.",
+                                getString(R.string.premissions_isi),
                                 Snackbar.LENGTH_LONG
                             )
-                        snackbar.setAction("IZINKAN AKSES") {
+                        snackbar.setAction(getString(R.string.premissions_title)) {
                             goToSettings()
                         }
                         snackbar.show()
