@@ -41,6 +41,8 @@ import id.coedotz.watermarkgenerator.databinding.ActivityMainBinding
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
@@ -189,6 +191,11 @@ class MainActivity : AppCompatActivity() {
                                 true
                             }
                             R.id.action_rotate -> {
+                                val bitmap = getBitmapFromUri(Uri.fromFile(file))
+                                if (bitmap != null) {
+                                    val rotatedBitmap = rotateImage(bitmap)
+                                    showRotatedImagePreview(Uri.fromFile(file), rotatedBitmap)
+                                }
                                 true
                             }
                             R.id.action_delete -> {
@@ -220,6 +227,93 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
         dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_light))
+    }
+
+    private fun showRotatedImagePreview(originalUri: Uri, rotatedBitmap: Bitmap) {
+        val inflater = LayoutInflater.from(this)
+        val dialogView = inflater.inflate(R.layout.dialog_image_preview, null)
+        val photoView: PhotoView = dialogView.findViewById(R.id.photo_view)
+        photoView.setImageBitmap(rotatedBitmap)
+
+        var currentBitmap = rotatedBitmap
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.putar_gambar))
+            .setView(dialogView)
+            .setPositiveButton(getString(R.string.simpan)) { dialog, _ ->
+                saveRotatedImage(currentBitmap, originalUri)
+                dialog.dismiss()
+            }
+            .setNegativeButton(getString(R.string.batal)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setNeutralButton(getString(R.string.putar)) { _, _ -> }
+            .show()
+
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+            currentBitmap = rotateImage(currentBitmap)
+            photoView.setImageBitmap(currentBitmap)
+        }
+    }
+
+    private fun saveRotatedImage(bitmap: Bitmap, originalUri: Uri) {
+        val originalFilePath = getFileFromUri(originalUri)?.path
+        if (originalFilePath.isNullOrEmpty()) {
+            setSnackbar(getString(R.string.gagal_untuk_mendapatkan_gambar))
+            return
+        }
+
+        val originalFile = File(originalFilePath)
+        if (!originalFile.exists()) {
+            setSnackbar(getString(R.string.file_tidak_ditemukan))
+            return
+        }
+
+        try {
+            FileOutputStream(originalFile).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                out.flush()
+            }
+            setSnackbar(getString(R.string.gambar_berhasil_disimpan))
+            displaySelectedImages()
+        } catch (e: IOException) {
+            setSnackbar(getString(R.string.gambar_gagal_disimpan))
+            e.printStackTrace()
+        }
+    }
+
+    private fun getFileFromUri(uri: Uri): File? {
+        return try {
+            val filePath = getRealPathFromURI(uri)
+            if (filePath != null) {
+                File(filePath)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        return if (cursor != null) {
+            cursor.moveToFirst()
+            val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            val path = cursor.getString(index)
+            cursor.close()
+            path
+        } else {
+            uri.path
+        }
+    }
+
+    private fun rotateImage(bitmap: Bitmap): Bitmap {
+        val matrix = android.graphics.Matrix().apply {
+            postRotate(90f)
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     private fun applyWatermarkToImages() {

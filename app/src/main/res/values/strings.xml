@@ -23,4 +23,11 @@
     <string name="preview_image">Lihat Gambar</string>
     <string name="rotate_image">Putar Gambar</string>
     <string name="delete_image">Hapus Gambar\n</string>
+    <string name="gambar_gagal_disimpan">Gambar gagal disimpan</string>
+    <string name="gambar_berhasil_disimpan">Gambar berhasil disimpan</string>
+    <string name="putar_gambar">Putar Gambar</string>
+    <string name="putar">Putar</string>
+    <string name="gagal_untuk_mendapatkan_gambar">Gagal untuk mendapatkan gambar</string>
+    <string name="file_tidak_ditemukan">File tidak ditemukan</string>
+    <string name="simpan">Simpan</string>
 </resources>
