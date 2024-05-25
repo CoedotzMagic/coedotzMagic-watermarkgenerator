@@ -20,4 +20,7 @@
     <string name="gambar_tidak_ada">Gambar tidak ada</string>
     <string name="premissions_title">IZINKAN AKSES</string>
     <string name="premissions_isi">Izinkan Akses Galeri agar bisa melakukan Watermark.</string>
+    <string name="preview_image">Lihat Gambar</string>
+    <string name="rotate_image">Putar Gambar</string>
+    <string name="delete_image">Hapus Gambar\n</string>
 </resources>

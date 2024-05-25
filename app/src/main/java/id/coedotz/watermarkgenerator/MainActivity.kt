@@ -25,6 +25,7 @@ import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -177,8 +178,27 @@ class MainActivity : AppCompatActivity() {
                     .skipMemoryCache(true)
                     .into(imageView)
 
-                imageView.setOnClickListener {
-                    showImagePreview(Uri.fromFile(file))
+                imageView.setOnClickListener { view ->
+                    val popup = PopupMenu(this@MainActivity, view)
+                    val inflater = popup.menuInflater
+                    inflater.inflate(R.menu.context_menu, popup.menu)
+                    popup.setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.action_preview -> {
+                                showImagePreview(Uri.fromFile(file))
+                                true
+                            }
+                            R.id.action_rotate -> {
+                                true
+                            }
+                            R.id.action_delete -> {
+                                confirmationDelete(Uri.fromFile(file))
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    popup.show()
                 }
             }
     }
